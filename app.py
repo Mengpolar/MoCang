@@ -536,6 +536,9 @@ def main():
     x = win.get("x")
     y = win.get("y")
 
+    # 设置 WebView2 用户数据目录（兼容 pyappify 沙箱环境）
+    os.environ["WEBVIEW2_USER_DATA_FOLDER"] = str(DATA_DIR / "webview2")
+
     import webview
     window = webview.create_window(
         title="墨仓 | MoCang",
