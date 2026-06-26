@@ -1,0 +1,350 @@
+.kb-sidebar {
+    width: var(--sidebar-width);
+    background: var(--bg-panel);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border-right: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.kb-add-file {
+    padding: 12px;
+    border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.kb-add-file input {
+    width: 100%;
+    padding: 7px 10px;
+    background: var(--bg-input);
+    border: 1px solid var(--glass-border);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 12px;
+    outline: none;
+    transition: var(--transition);
+}
+.kb-add-file input:focus { border-color: var(--accent); }
+
+.btn-small {
+    padding: 6px 14px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.btn-small:hover { background: var(--accent-hover); }
+
+/* 侧边栏操作按钮 */
+.kb-sidebar-actions {
+    display: flex;
+    gap: 4px;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--glass-border);
+}
+.kb-sidebar-btn {
+    flex: 1;
+    padding: 5px 8px;
+    background: var(--bg-input);
+    border: 1px solid var(--divider);
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-size: 11px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.kb-sidebar-btn:hover { background: var(--bg-hover); color: var(--text-secondary); }
+
+/* 拖拽添加区域 */
+.kb-drop-zone {
+    padding: 10px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--glass-border);
+    transition: var(--transition);
+    cursor: pointer;
+}
+/* 视图切换 */
+.kb-view-modes {
+    display: flex;
+    gap: 4px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.kb-view-btn {
+    flex: 1;
+    padding: 6px 8px;
+    background: var(--bg-input);
+    border: 1px solid var(--divider);
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-size: 11px;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+.kb-view-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-secondary);
+}
+.kb-view-btn.active {
+    background: var(--bg-active);
+    color: var(--accent);
+    border-color: rgba(108, 99, 255, 0.3);
+}
+
+/* 文件列表 */
+.kb-file-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    min-height: 0;
+}
+.kb-file-list::-webkit-scrollbar { width: 4px; }
+.kb-file-list::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 4px; }
+
+/* 底部固定删除拖放区 */
+.kb-delete-zone {
+    flex-shrink: 0;
+    padding: 0;
+    text-align: center;
+    font-size: 11px;
+    color: var(--danger);
+    border-top: 1px solid var(--divider);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease, padding 0.2s ease, opacity 0.2s ease;
+    opacity: 0;
+}
+.kb-delete-zone.active {
+    max-height: 40px;
+    padding: 8px 12px;
+    opacity: 1;
+}
+.kb-delete-zone.drag-over {
+    background: rgba(255, 71, 87, 0.1);
+    color: var(--danger);
+}
+
+.kb-file-item {
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-bottom: 4px;
+    border: 1px solid transparent;
+}
+.kb-file-item:hover {
+    background: var(--bg-hover);
+    border-color: var(--divider);
+}
+.kb-file-item.active {
+    background: var(--bg-active);
+    border-color: rgba(108, 99, 255, 0.2);
+}
+
+.kb-file-alias {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    cursor: default;
+}
+.alias-edit-input {
+    width: 100%;
+    padding: 2px 6px;
+    background: var(--bg-hover);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-size: 13px;
+    font-family: inherit;
+    outline: none;
+}
+
+/* 文件分组标签 */
+.kb-file-group-tag {
+    display: inline-block;
+    padding: 1px 8px;
+    margin-top: 4px;
+    font-size: 10px;
+    color: var(--text-muted);
+    background: var(--bg-input);
+    border: 1px solid var(--divider);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.kb-file-group-tag:hover { background: var(--bg-hover); color: var(--text-secondary); }
+
+/* 分组 */
+.kb-group { margin-bottom: 2px; }
+.kb-group-header {
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition);
+    user-select: none;
+    border-radius: 6px;
+}
+.kb-group-header:hover { background: var(--bg-hover); color: var(--text-secondary); }
+.kb-group-header.drag-over { background: var(--bg-active); color: var(--accent); }
+
+/* 拖拽排序指示线（独立元素，位于两分组之间） */
+.drag-indicator {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 1px;
+    z-index: 10;
+    pointer-events: none;
+    box-shadow: 0 0 6px var(--accent);
+}
+.kb-group-arrow { font-size: 10px; margin-right: 4px; display: inline-block; width: 12px; }
+.kb-group-children { padding-left: 8px; }
+.kb-group.dragging { opacity: 0.3; }
+.kb-group-count { font-size: 10px; color: var(--text-muted); font-weight: normal; }
+
+/* 根级拖放区 */
+.kb-root-drop-zone {
+    padding: 0;
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    border: 1px dashed var(--divider);
+    border-radius: 6px;
+    margin: 2px 8px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.2s, padding 0.2s, opacity 0.2s;
+}
+.kb-root-drop-zone.active {
+    max-height: 40px;
+    padding: 8px 12px;
+    opacity: 1;
+}
+.kb-root-drop-zone.drag-over {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--bg-active);
+}
+
+/* 删除拖放区 */
+.kb-delete-drop-zone {
+    margin: 8px;
+    padding: 8px 12px;
+    text-align: center;
+    font-size: 11px;
+    color: var(--text-muted);
+    border: 1px dashed var(--divider);
+    border-radius: 6px;
+    transition: var(--transition);
+    opacity: 0.4;
+}
+.kb-delete-drop-zone.drag-over {
+    opacity: 1;
+    border-color: var(--danger);
+    color: var(--danger);
+    background: rgba(255, 71, 87, 0.08);
+}
+
+/* 文件丢失 */
+.kb-file-item.missing { opacity: 0.4; pointer-events: auto; }
+.kb-file-item.missing .kb-file-alias { text-decoration: line-through; }
+.kb-file-item.missing:hover { opacity: 0.6; }
+
+/* 拖拽中 */
+.kb-file-item.dragging { opacity: 0.3; }
+.kb-file-item.drag-over { box-shadow: inset 0 2px 0 0 var(--accent); }
+
+/* 分组选择弹窗 */
+.group-selector-popup {
+    position: fixed;
+    z-index: 400;
+    width: 180px;
+    background: var(--bg-float);
+    border: 1px solid var(--glass-border);
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+.group-selector-title {
+    font-size: 11px;
+    color: var(--text-muted);
+    padding: 4px 8px 8px;
+    border-bottom: 1px solid var(--divider);
+    margin-bottom: 4px;
+}
+.group-selector-input {
+    width: 100%;
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    background: var(--bg-input);
+    border: 1px solid var(--glass-border);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-size: 12px;
+    outline: none;
+}
+.group-selector-input:focus { border-color: var(--accent); }
+.group-selector-item {
+    padding: 6px 8px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+.group-selector-item:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+.kb-file-path {
+    font-size: 11px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.kb-file-actions {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: var(--transition);
+}
+.kb-file-item { position: relative; }
+.kb-file-item:hover .kb-file-actions { opacity: 1; }
+
+.kb-file-del {
+    font-size: 11px;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: var(--transition);
+}
+.kb-file-del:hover {
+    color: var(--danger);
+    background: rgba(255,71,87,0.1);
+}

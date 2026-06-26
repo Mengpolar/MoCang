@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>墨仓 | MoCang</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/vendor/highlight/github-dark.min.css">
+    <script src="/static/vendor/highlight/highlight.min.js"></script>
+    <script src="/static/vendor/Sortable.min.js"></script>
+    <script src="/static/vendor/marked.min.js"></script>
+</head>
+<body>
+    <!-- 全局背景 -->
+    <div id="bg-layer"></div>
+
+    <!-- 主界面 -->
+    <div id="app">
+        <!-- 窗口边缘缩放手柄 -->
+        <div class="resize-handle resize-n" data-dir="n"></div>
+        <div class="resize-handle resize-s" data-dir="s"></div>
+        <div class="resize-handle resize-w" data-dir="w"></div>
+        <div class="resize-handle resize-e" data-dir="e"></div>
+        <div class="resize-handle resize-nw" data-dir="nw"></div>
+        <div class="resize-handle resize-ne" data-dir="ne"></div>
+        <div class="resize-handle resize-sw" data-dir="sw"></div>
+        <div class="resize-handle resize-se" data-dir="se"></div>
+        <!-- 自定义标题栏 -->
+        <div id="titlebar" class="titlebar pywebview-drag-region">
+            <div class="titlebar-drag pywebview-drag-region">
+                <img src="/static/icon.png" class="titlebar-icon" alt="">
+                <span class="titlebar-brand">墨仓 | MoCang</span>
+            </div>
+            <div class="titlebar-controls" id="titlebar-controls" style="display:none;">
+                <span class="titlebar-resource" id="titlebar-resource" style="display:none;"></span>
+                <button class="titlebar-btn" id="btn-settings" title="设置">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                </button>
+                <button class="titlebar-btn" id="btn-minimize" title="最小化">
+                    <svg width="12" height="12" viewBox="0 0 12 12"><rect y="5" width="12" height="2" fill="currentColor"/></svg>
+                </button>
+                <button class="titlebar-btn" id="btn-maximize" title="最大化">
+                    <svg id="svg-maximize" width="12" height="12" viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+                    <svg id="svg-restore" width="12" height="12" viewBox="0 0 12 12" style="display:none;"><rect x="2" y="3" width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.2"/><polyline points="4,3 4,1 11,1 11,8 9,8" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+                </button>
+                <button class="titlebar-btn titlebar-btn-close" id="btn-close" title="关闭">
+                    <svg width="12" height="12" viewBox="0 0 12 12"><line x1="1" y1="1" x2="11" y2="11" stroke="currentColor" stroke-width="1.5"/><line x1="11" y1="1" x2="1" y2="11" stroke="currentColor" stroke-width="1.5"/></svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- 顶部导航 -->
+        <nav id="top-nav">
+            <div class="nav-search">
+                <span class="search-icon"><img src="/static/icons/svgs/sousuo.svg" width="14" height="14" style="vertical-align:middle;filter:invert(1) brightness(0.8);"></span>
+                <input type="text" id="global-search" placeholder="搜索所有文档..." autocomplete="off">
+                <div id="search-results" class="search-results" style="display:none;"></div>
+            </div>
+        </nav>
+
+        <!-- 内容区 -->
+        <main id="content-area">
+            <div class="knowledge-layout">
+                <!-- 左侧文件列表 -->
+                <aside class="kb-sidebar" id="kb-sidebar">
+                    <div id="kb-drop-zone" class="kb-drop-zone"><img src="/static/icons/svgs/tianjia.svg" width="14" height="14" style="vertical-align:middle;filter:invert(1) brightness(0.8);"> 点击添加 .md 文件</div>
+                    <!-- 视图切换 -->
+                    <div class="kb-view-modes">
+                        <button class="kb-view-btn" data-mode="edit" title="编辑视图"><img src="/static/icons/svgs/bianji-3.svg" width="14" height="14" style="vertical-align:middle;filter:invert(1) brightness(0.8);"> 编辑</button>
+                        <button class="kb-view-btn active" data-mode="preview" title="预览视图"><img src="/static/icons/svgs/eye.svg" width="14" height="14" style="vertical-align:middle;filter:invert(1) brightness(0.8);"> 预览</button>
+                        <button class="kb-view-btn" data-mode="split" title="编辑+预览"><img src="/static/icons/svgs/fangda.svg" width="14" height="14" style="vertical-align:middle;filter:invert(1) brightness(0.8);"> 分屏</button>
+                    </div>
+                    <div class="kb-sidebar-actions">
+                        <button id="btn-create-group" class="kb-sidebar-btn" title="创建新分组"><img src="/static/icons/svgs/folder.svg" width="14" height="14" style="vertical-align:middle;filter:invert(1) brightness(0.8);"> 新建分组</button>
+                    </div>
+                    <div id="kb-file-list" class="kb-file-list"></div>
+                    <!-- 底部固定删除拖放区 -->
+                    <div id="kb-delete-zone" class="kb-delete-zone"></div>
+                </aside>
+
+                <!-- 右侧内容区 -->
+                <div class="kb-main" id="kb-main-area">
+                    <!-- 编辑工具栏 -->
+                    <div id="kb-toolbar" class="kb-toolbar" style="display:none;">
+                        <button class="kb-tool-btn" data-action="bold" title="加粗 (Ctrl+B)"><b>B</b></button>
+                        <button class="kb-tool-btn" data-action="italic" title="斜体 (Ctrl+I)"><i>I</i></button>
+                        <button class="kb-tool-btn" data-action="strikethrough" title="删除线"><s>S</s></button>
+                        <span class="kb-tool-sep"></span>
+                        <button class="kb-tool-btn" data-action="h1" title="一级标题">H1</button>
+                        <button class="kb-tool-btn" data-action="h2" title="二级标题">H2</button>
+                        <button class="kb-tool-btn" data-action="h3" title="三级标题">H3</button>
+                        <span class="kb-tool-sep"></span>
+                        <button class="kb-tool-btn" data-action="ul" title="无序列表">• 列表</button>
+                        <button class="kb-tool-btn" data-action="ol" title="有序列表">1. 列表</button>
+                        <button class="kb-tool-btn" data-action="check" title="任务列表">☑ 任务</button>
+                        <span class="kb-tool-sep"></span>
+                        <button class="kb-tool-btn" data-action="code" title="行内代码">&lt;/&gt;</button>
+                        <button class="kb-tool-btn" data-action="codeblock" title="代码块">```</button>
+                        <button class="kb-tool-btn" data-action="quote" title="引用">❝ 引用</button>
+                        <button class="kb-tool-btn" data-action="link" title="链接 (Ctrl+K)">🔗</button>
+                        <button class="kb-tool-btn" data-action="table" title="表格">📊</button>
+                        <button class="kb-tool-btn" data-action="hr" title="分隔线">—</button>
+                        <span class="kb-tool-sep"></span>
+                        <button class="kb-tool-btn kb-save-btn" data-action="save" title="保存 (Ctrl+S)"><img src="/static/icons/svgs/baocun.svg" width="14" height="14" style="vertical-align:middle;filter:invert(1) brightness(0.8);"> 保存</button>
+                    </div>
+                    <!-- 编辑区容器 -->
+                    <div id="kb-editor-area" class="kb-editor-area">
+                        <textarea id="kb-editor" class="kb-editor" style="display:none;" spellcheck="false" placeholder="输入 Markdown 内容..."></textarea>
+                        <!-- 预览区 -->
+                        <div id="kb-content" class="kb-content">
+                            <div class="kb-placeholder">
+                                <span class="kb-placeholder-icon"><img src="/static/icons/svgs/file.svg" width="64" height="64" style="opacity:0.5;filter:invert(1) brightness(0.8);"></span>
+                                <p>选择左侧文件查看内容</p>
+                            </div>
+                        </div>
+                        <!-- 分屏拖动条 -->
+                        <div id="kb-divider" class="kb-divider" style="display:none;"></div>
+                        <!-- 分屏预览区 -->
+                        <div id="kb-preview-split" class="kb-preview-split" style="display:none;"></div>
+                    </div>
+                </div>
+
+                <!-- 右侧目录导航 -->
+                <aside id="kb-toc" class="kb-toc">
+                    <div class="kb-toc-title">目录</div>
+                    <div id="kb-toc-list" class="kb-toc-list"></div>
+                </aside>
+            </div>
+        </main>
+    </div>
+
+    <!-- 设置页面 -->
+    <div id="settings-overlay" class="settings-overlay" style="display:none;">
+        <div class="settings-panel">
+            <div class="settings-header">
+                <span class="settings-title"><img src="/static/icons/svgs/box.svg" width="16" height="16" style="vertical-align:middle;filter:invert(1) brightness(0.8);"> 设置</span>
+                <button class="settings-close-btn" id="settings-close">&times;</button>
+            </div>
+            <div class="settings-body">
+                <div class="settings-menu">
+                    <div class="settings-menu-item active" data-section="lock"><img src="/static/icons/svgs/guding.svg" width="14" height="14" style="vertical-align:middle;filter:invert(1) brightness(0.8);"> 锁屏设置</div>
+                    <div class="settings-menu-item" data-section="editor"><img src="/static/icons/svgs/bianji-3.svg" width="14" height="14" style="vertical-align:middle;filter:invert(1) brightness(0.8);"> 文档设置</div>
+                    <div class="settings-menu-item" data-section="interface"><img src="/static/icons/svgs/taiyang.svg" width="14" height="14" style="vertical-align:middle;filter:invert(1) brightness(0.8);"> 界面设置</div>
+                    <div class="settings-menu-item" data-section="software"><img src="/static/icons/svgs/box.svg" width="14" height="14" style="vertical-align:middle;filter:invert(1) brightness(0.8);"> 软件设置</div>
+                </div>
+                <div class="settings-content">
+                    <!-- 锁屏设置 -->
+                    <div class="settings-section active" id="section-lock">
+                        <div class="setting-row">
+                            <div class="setting-label">启用锁屏</div>
+                            <div class="setting-control"><label class="toggle-switch"><input type="checkbox" id="set-lock-enabled"><span class="toggle-slider"></span></label></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">锁屏密码</div>
+                            <div class="setting-control"><button class="btn-setting" id="btn-set-password">设置</button><button class="btn-setting btn-setting-danger" id="btn-clear-password" style="display:none;">清除</button></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">长时间未操作</div>
+                            <div class="setting-control"><select id="set-lock-idle" class="setting-select"><option value="0">不锁屏</option><option value="60">1 分钟</option><option value="300">5 分钟</option><option value="600">10 分钟</option><option value="1800">30 分钟</option><option value="3600">1 小时</option></select></div>
+                        </div>
+                    </div>
+                    <!-- 文档设置 -->
+                    <div class="settings-section" id="section-editor">
+                        <div class="setting-row">
+                            <div class="setting-label">自动保存</div>
+                            <div class="setting-control"><label class="toggle-switch"><input type="checkbox" id="set-auto-save"><span class="toggle-slider"></span></label></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">触发保存时间（秒）</div>
+                            <div class="setting-control"><select id="set-save-interval" class="setting-select"><option value="10">10</option><option value="20">20</option><option value="30">30</option><option value="45">45</option><option value="60">60</option></select></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">编辑器字体大小</div>
+                            <div class="setting-control"><select id="set-font-size" class="setting-select"><option value="10">10</option><option value="12">12</option><option value="14">14</option><option value="16">16</option><option value="18">18</option><option value="20">20</option><option value="22">22</option><option value="24">24</option><option value="26">26</option><option value="28">28</option><option value="30">30</option><option value="32">32</option><option value="34">34</option><option value="36">36</option><option value="38">38</option><option value="40">40</option></select></div>
+                        </div>
+                    </div>
+                    <!-- 界面设置 -->
+                    <div class="settings-section" id="section-interface">
+                        <div class="setting-row">
+                            <div class="setting-label">自定义背景图片</div>
+                            <div class="setting-control"><button class="btn-setting" id="btn-upload-bg">选择图片</button><button class="btn-setting btn-setting-danger" id="btn-remove-bg" style="display:none;">移除背景</button><input type="file" id="bg-file-input" accept="image/*" style="display:none;"></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">暗黑模式</div>
+                            <div class="setting-control"><label class="toggle-switch"><input type="checkbox" id="set-dark-mode"><span class="toggle-slider"></span></label></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">全局透明度</div>
+                            <div class="setting-control"><div class="slider-container"><input type="range" id="set-opacity" min="50" max="100" value="100" class="setting-slider"><span id="opacity-value" class="slider-value">1.0</span></div></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">界面透明度</div>
+                            <div class="setting-control"><div class="slider-container"><input type="range" id="set-ui-opacity" min="30" max="100" value="90" class="setting-slider"><span id="ui-opacity-value" class="slider-value">0.9</span></div></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">背景模糊度</div>
+                            <div class="setting-control"><div class="slider-container"><input type="range" id="set-bg-blur" min="0" max="30" value="0" class="setting-slider"><span id="bg-blur-value" class="slider-value">0px</span></div></div>
+                        </div>
+                    </div>
+                    <!-- 软件设置 -->
+                    <div class="settings-section" id="section-software">
+                        <div class="setting-row">
+                            <div class="setting-label">自动更新</div>
+                            <div class="setting-control"><label class="toggle-switch"><input type="checkbox" id="set-auto-update"><span class="toggle-slider"></span></label></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">显示资源占用</div>
+                            <div class="setting-control"><label class="toggle-switch"><input type="checkbox" id="set-show-resource"><span class="toggle-slider"></span></label></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="settings-footer">
+                <button class="btn-settings-action btn-cancel" id="btn-settings-cancel">取消</button>
+                <button class="btn-settings-action btn-save" id="btn-settings-save">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 锁屏遮罩 -->
+    <div id="lock-overlay" class="lock-overlay" style="display:none;">
+        <div class="lock-box">
+            <div class="lock-icon"><img src="/static/icons/svgs/guding.svg" width="64" height="64" style="filter:invert(1) brightness(0.8);"></div>
+            <div class="lock-title">屏幕已锁定</div>
+            <input type="password" id="lock-password" class="lock-input" placeholder="请输入密码">
+            <button class="btn-lock-unlock" id="btn-unlock">解锁</button>
+            <button class="btn-lock-close" id="btn-lock-close">关闭程序</button>
+            <div id="lock-error" class="lock-error" style="display:none;"></div>
+        </div>
+    </div>
+
+    <!-- 自定义弹窗 -->
+    <div id="modal-overlay" class="modal-overlay" style="display:none;">
+        <div class="modal-panel">
+            <div class="modal-header">
+                <span class="modal-title" id="modal-title">提示</span>
+            </div>
+            <div class="modal-body">
+                <div class="modal-message" id="modal-message"></div>
+                <input type="text" id="modal-input" class="modal-input" style="display:none;" autocomplete="off">
+            </div>
+            <div class="modal-footer" id="modal-footer"></div>
+        </div>
+    </div>
+
+    <!-- JS 模块（按依赖顺序加载） -->
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/state.js"></script>
+    <script src="/static/js/files.js"></script>
+    <script src="/static/js/groups.js"></script>
+    <script src="/static/js/editor.js"></script>
+    <script src="/static/js/view.js"></script>
+    <script src="/static/js/search.js"></script>
+    <script src="/static/js/settings.js"></script>
+    <script src="/static/js/app.js"></script>
+    <script>if (typeof MoCang !== 'undefined' && MoCang.init) MoCang.init();</script>
+    <script>
+        // ══════════════════════════════════════════
+        //  SVG 图标辅助
+        // ══════════════════════════════════════════
+        function svgImg(name, size) {
+            size = size || 16;
+            return '<img src="/static/icons/svgs/' + name + '.svg" width="' + size + '" height="' + size + '" style="vertical-align:middle;filter:invert(1) brightness(0.8);">';
+        }
+
+        // ══════════════════════════════════════════
+        //  自定义弹窗系统
+        // ══════════════════════════════════════════
+        function showModal(opts) {
+            return new Promise(function(resolve) {
+                var overlay = document.getElementById('modal-overlay');
+                var titleEl = document.getElementById('modal-title');
+                var msgEl = document.getElementById('modal-message');
+                var inputEl = document.getElementById('modal-input');
+                var footerEl = document.getElementById('modal-footer');
+
+                titleEl.textContent = opts.title || '提示';
+                msgEl.textContent = opts.message || '';
+                inputEl.style.display = opts.input ? 'block' : 'none';
+                inputEl.value = opts.inputValue || '';
+                inputEl.type = opts.inputType || 'text';
+                footerEl.innerHTML = '';
+
+                if (opts.input) {
+                    setTimeout(function() { inputEl.focus(); }, 100);
+                    inputEl.onkeydown = function(e) {
+                        if (e.key === 'Enter') { cleanup(); resolve(inputEl.value); }
+                        if (e.key === 'Escape') { cleanup(); resolve(null); }
+                    };
+                }
+
+                function cleanup() {
+                    overlay.style.display = 'none';
+                    footerEl.innerHTML = '';
+                }
+
+                if (opts.type === 'confirm' || opts.type === 'prompt') {
+                    var btnCancel = document.createElement('button');
+                    btnCancel.className = 'modal-btn modal-btn-cancel';
+                    btnCancel.textContent = opts.cancelText || '取消';
+                    btnCancel.onclick = function() { cleanup(); resolve(opts.type === 'confirm' ? false : null); };
+                    footerEl.appendChild(btnCancel);
+                }
+
+                var btnConfirm = document.createElement('button');
+                btnConfirm.className = 'modal-btn ' + (opts.danger ? 'modal-btn-danger' : 'modal-btn-confirm');
+                btnConfirm.textContent = opts.confirmText || '确定';
+                btnConfirm.onclick = function() {
+                    cleanup();
+                    resolve(opts.input ? inputEl.value : true);
+                };
+                footerEl.appendChild(btnConfirm);
+
+                overlay.style.display = 'flex';
+                if (!opts.input) btnConfirm.focus();
+            });
+        }
+
+        function showAlert(message, title) {
+            return showModal({ type: 'alert', title: title || '提示', message: message });
+        }
+
+        function showConfirm(message, title, danger) {
+            return showModal({ type: 'confirm', title: title || '确认', message: message, danger: danger });
+        }
+
+        function showPrompt(message, defaultValue, title) {
+            return showModal({ type: 'prompt', title: title || '输入', message: message, input: true, inputValue: defaultValue || '' });
+        }
+
+        // ── 窗口边缘缩放（独立于 pywebviewready）──
+        (function() {
+            var resizing = false, resizeDir = '';
+            var startX, startY, startW, startH, startPosX, startPosY;
+            var resizeReady = false;
+
+            var handles = document.querySelectorAll('.resize-handle');
+            handles.forEach(function(el) {
+                el.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    resizeDir = el.dataset.dir;
+                    startX = e.screenX;
+                    startY = e.screenY;
+                    startW = window.outerWidth;
+                    startH = window.outerHeight;
+                    startPosX = window.screenX;
+                    startPosY = window.screenY;
+                    resizing = true;
+                    resizeReady = true;
+                    document.body.style.cursor = getCursor(resizeDir);
+                    document.body.style.userSelect = 'none';
+                });
+            });
+
+            function getCursor(dir) {
+                var map = {n:'ns-resize',s:'ns-resize',w:'ew-resize',e:'ew-resize',nw:'nwse-resize',se:'nwse-resize',ne:'nesw-resize',sw:'nesw-resize'};
+                return map[dir] || 'default';
+            }
+
+            var lastResizeTime = 0;
+            document.addEventListener('mousemove', function(e) {
+                if (!resizing || !resizeReady) return;
+                var now = Date.now();
+                if (now - lastResizeTime < 16) return;
+                lastResizeTime = now;
+
+                var dx = e.screenX - startX, dy = e.screenY - startY;
+                var newW = startW, newH = startH, newX = startPosX, newY = startPosY;
+                if (resizeDir.indexOf('e') >= 0) newW = Math.max(900, startW + dx);
+                if (resizeDir.indexOf('s') >= 0) newH = Math.max(600, startH + dy);
+                if (resizeDir.indexOf('w') >= 0) { newW = Math.max(900, startW - dx); newX = startPosX + (startW - newW); }
+                if (resizeDir.indexOf('n') >= 0) { newH = Math.max(600, startH - dy); newY = startPosY + (startH - newH); }
+                var needsMove = (resizeDir.indexOf('w') >= 0 || resizeDir.indexOf('n') >= 0);
+                if (needsMove) {
+                    window.pywebview.api.move_and_resize(newX, newY, newW, newH);
+                } else {
+                    window.pywebview.api.resize_only(newW, newH);
+                }
+            });
+
+            document.addEventListener('mouseup', function() {
+                if (resizing) {
+                    resizing = false;
+                    resizeReady = false;
+                    document.body.style.cursor = '';
+                    document.body.style.userSelect = '';
+                }
+            });
+        })();
+
+        // ── 自定义标题栏窗口控制 ──
+        window.addEventListener('pywebviewready', function() {
+            // 显示窗口控制按钮
+            document.getElementById('titlebar-controls').style.display = 'flex';
+
+            // 窗口控制
+            document.getElementById('btn-minimize').addEventListener('click', function() {
+                window.pywebview.api.minimize();
+            });
+            var isMaximized = false;
+            document.getElementById('btn-maximize').addEventListener('click', function() {
+                window.pywebview.api.toggle_maximize();
+                isMaximized = !isMaximized;
+                document.getElementById('svg-maximize').style.display = isMaximized ? 'none' : 'block';
+                document.getElementById('svg-restore').style.display = isMaximized ? 'block' : 'none';
+            });
+            document.getElementById('btn-close').addEventListener('click', function() {
+                window.pywebview.api.close();
+            });
+
+            // 恢复上次窗口状态
+            fetch('/api/settings').then(function(r){return r.json();}).then(function(s) {
+                if (s.view_mode && typeof MoCang !== 'undefined') MoCang.setViewMode(s.view_mode);
+                if (s.window && s.window.maximized) {
+                    window.pywebview.api.toggle_maximize();
+                    isMaximized = true;
+                    document.getElementById('svg-maximize').style.display = 'none';
+                    document.getElementById('svg-restore').style.display = 'block';
+                }
+                if (s.active_file_id && typeof MoCang !== 'undefined') {
+                    setTimeout(function() { MoCang.openFile(s.active_file_id); }, 500);
+                }
+            });
+
+            // 页面关闭前保存状态
+            window.addEventListener('beforeunload', function() {
+                var state = {
+                    active_file_id: MoCang.getActiveFileId(),
+                    view_mode: MoCang.getViewMode(),
+                    window: { width: window.outerWidth, height: window.outerHeight, x: window.screenX, y: window.screenY }
+                };
+                navigator.sendBeacon('/api/settings', new Blob([JSON.stringify(state)], {type: 'application/json'}));
+            });
+        });
+    </script>
+</body>
+</html>

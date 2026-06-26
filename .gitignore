@@ -1,0 +1,20 @@
+# Build artifacts
+build/
+dist/
+*.spec.bak
+__pycache__/
+*.pyc
+
+# User data
+data/settings.json
+data/knowledge.json
+data/groups.json
+data/backgrounds/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+Desktop.ini
