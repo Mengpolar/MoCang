@@ -12,6 +12,15 @@ data/groups.json
 data/backgrounds/
 data/webview2/
 
+# Sensitive files
+.env
+*.pem
+*.key
+*.p12
+*.pfx
+secrets.json
+.secret_key
+
 # IDE
 .vscode/
 .idea/

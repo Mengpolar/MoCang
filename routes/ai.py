@@ -1,6 +1,8 @@
 """墨仓 | MoCang - AI API"""
 import json as _json
+import time
 import urllib.request
+from collections import defaultdict
 from pathlib import Path
 
 from flask import Blueprint, request, jsonify
@@ -8,6 +10,19 @@ from flask import Blueprint, request, jsonify
 from utils import load_settings
 
 ai_bp = Blueprint("ai_bp", __name__)
+
+# 速率限制：本地桌面应用，全局共享即可
+_rate_limit_data = defaultdict(list)
+RATE_LIMIT = 20
+RATE_WINDOW = 60
+
+def _check_rate_limit():
+    now = time.time()
+    _rate_limit_data["ai"] = [t for t in _rate_limit_data["ai"] if now - t < RATE_WINDOW]
+    if len(_rate_limit_data["ai"]) >= RATE_LIMIT:
+        return False
+    _rate_limit_data["ai"].append(now)
+    return True
 
 PROMPTS_DIR = Path(__file__).parent.parent / "prompts"
 
@@ -81,12 +96,16 @@ def api_ai_test():
 @ai_bp.route("/ai/request", methods=["POST"])
 def api_ai_request():
     """AI 请求接口（后端读取提示词和配置）"""
+    if not _check_rate_limit():
+        return jsonify({"ok": False, "error": "请求过于频繁，请稍后再试"}), 429
     data = request.get_json(silent=True) or {}
     prompt_type = data.get("type", "default")
     content = data.get("content", "")
 
     if not content.strip():
         return jsonify({"ok": False, "error": "内容不能为空"})
+    if len(content) > 10000:
+        return jsonify({"ok": False, "error": "内容过长，最多 10000 字符"})
 
     # 检查 AI 是否启用
     settings = load_settings()

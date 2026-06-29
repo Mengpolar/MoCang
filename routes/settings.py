@@ -3,7 +3,11 @@ import os
 from pathlib import Path
 from flask import Blueprint, request, jsonify, send_file
 
-from utils import load_json, save_json, load_settings, save_settings, BASE_DIR, DATA_DIR
+from utils import (
+    load_json, save_json, load_settings, save_settings,
+    hash_password, verify_password, needs_password_upgrade,
+    BASE_DIR, DATA_DIR,
+)
 
 settings_bp = Blueprint("settings_bp", __name__)
 
@@ -23,6 +27,10 @@ def api_save_settings():
             current[k].update(v)
         else:
             current[k] = v
+    # 密码哈希处理
+    pwd = current.get("lock", {}).get("password", "")
+    if pwd and not pwd.startswith("pbkdf2:"):
+        current["lock"]["password"] = hash_password(pwd)
     save_settings(current)
     return jsonify({"ok": True})
 
@@ -36,7 +44,11 @@ def api_verify_lock():
     stored = settings.get("lock", {}).get("password", "")
     if not stored:
         return jsonify({"ok": True, "msg": "未设置密码"})
-    if password == stored:
+    if verify_password(password, stored):
+        # 旧版明文密码自动升级为哈希
+        if needs_password_upgrade(stored):
+            settings["lock"]["password"] = hash_password(password)
+            save_settings(settings)
         return jsonify({"ok": True})
     return jsonify({"ok": False, "error": "密码错误"}), 401
 

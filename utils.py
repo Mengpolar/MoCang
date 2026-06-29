@@ -1,6 +1,9 @@
 """墨仓 | MoCang - 共享工具函数"""
+import hashlib
+import hmac
 import json
 import os
+import secrets
 import sys
 from pathlib import Path
 
@@ -93,3 +96,40 @@ def load_settings():
 
 def save_settings(data):
     save_json(SETTINGS_FILE, data)
+
+
+# ── 安全工具 ─────────────────────────────────────────────────
+
+SECRET_KEY_FILE = DATA_DIR / ".secret_key"
+
+def get_secret_key():
+    """获取或生成持久化 secret key"""
+    if SECRET_KEY_FILE.exists():
+        return SECRET_KEY_FILE.read_text().strip()
+    key = secrets.token_hex(32)
+    SECRET_KEY_FILE.write_text(key)
+    return key
+
+PBKDF2_ITERATIONS = 100_000
+
+def hash_password(password: str) -> str:
+    """密码加盐哈希"""
+    salt = secrets.token_hex(16)
+    h = hashlib.pbkdf2_hmac("sha256", password.encode(), salt.encode(), PBKDF2_ITERATIONS)
+    return f"pbkdf2:{salt}:{h.hex()}"
+
+def verify_password(password: str, stored: str) -> bool:
+    """验证密码"""
+    if not stored or not password:
+        return False
+    # 兼容旧版明文密码：首次验证成功后自动升级为哈希
+    if stored.startswith("pbkdf2:"):
+        _, salt, h = stored.split(":", 2)
+        check = hashlib.pbkdf2_hmac("sha256", password.encode(), salt.encode(), PBKDF2_ITERATIONS)
+        return hmac.compare_digest(check.hex(), h)
+    # 旧版明文比对（兼容）
+    return hmac.compare_digest(password.encode(), stored.encode())
+
+def needs_password_upgrade(stored: str) -> bool:
+    """检查密码是否需要升级为哈希格式"""
+    return stored and not stored.startswith("pbkdf2:")

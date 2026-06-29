@@ -4,7 +4,7 @@ import sys
 import threading
 from flask import Flask, render_template
 
-from utils import BASE_DIR, DATA_DIR, load_settings, save_settings
+from utils import BASE_DIR, DATA_DIR, load_settings, save_settings, get_secret_key
 
 # ── Flask 应用 ────────────────────────────────────────────────
 
@@ -13,7 +13,16 @@ app = Flask(
     template_folder=str(BASE_DIR / "templates"),
     static_folder=str(BASE_DIR / "static"),
 )
-app.secret_key = os.urandom(32).hex()
+app.secret_key = get_secret_key()
+
+# ── 安全响应头 ────────────────────────────────────────────────
+
+@app.after_request
+def set_security_headers(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "SAMEORIGIN"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    return response
 
 # ── 注册蓝图 ─────────────────────────────────────────────────
 
@@ -377,9 +386,4 @@ def main():
     os._exit(0)
 
 if __name__ == "__main__":
-    if "--web" in sys.argv:
-        print(f"[OK] 墨仓 | MoCang 启动中（浏览器模式）...")
-        print(f"[OK] 访问地址: http://localhost:{FLASK_PORT}")
-        app.run(host="0.0.0.0", port=FLASK_PORT, debug=True)
-    else:
-        main()
+    main()
