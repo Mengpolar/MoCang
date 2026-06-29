@@ -1,0 +1,200 @@
+    <!-- JS 模块（按依赖顺序加载） -->
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/state.js"></script>
+    <script src="/static/js/files.js"></script>
+    <script src="/static/js/groups.js"></script>
+    <script src="/static/js/editor.js"></script>
+    <script src="/static/js/view.js"></script>
+    <script src="/static/js/search.js"></script>
+    <script src="/static/js/settings.js"></script>
+    <script src="/static/js/app.js"></script>
+    <script>if (typeof MoCang !== 'undefined' && MoCang.init) MoCang.init();</script>
+    <script>
+        // ══════════════════════════════════════════
+        //  SVG 图标辅助
+        // ══════════════════════════════════════════
+        function svgImg(name, size) {
+            size = size || 16;
+            return '<img src="/static/icons/svgs/' + name + '.svg" width="' + size + '" height="' + size + '" style="vertical-align:middle;filter:invert(1) brightness(0.8);">';
+        }
+
+        // ══════════════════════════════════════════
+        //  自定义弹窗系统
+        // ══════════════════════════════════════════
+        function showModal(opts) {
+            return new Promise(function(resolve) {
+                var overlay = document.getElementById('modal-overlay');
+                var titleEl = document.getElementById('modal-title');
+                var msgEl = document.getElementById('modal-message');
+                var inputEl = document.getElementById('modal-input');
+                var footerEl = document.getElementById('modal-footer');
+
+                titleEl.textContent = opts.title || '提示';
+                msgEl.textContent = opts.message || '';
+                inputEl.style.display = opts.input ? 'block' : 'none';
+                inputEl.value = opts.inputValue || '';
+                inputEl.type = opts.inputType || 'text';
+                footerEl.innerHTML = '';
+
+                if (opts.input) {
+                    setTimeout(function() { inputEl.focus(); }, 100);
+                    inputEl.onkeydown = function(e) {
+                        if (e.key === 'Enter') { cleanup(); resolve(inputEl.value); }
+                        if (e.key === 'Escape') { cleanup(); resolve(null); }
+                    };
+                }
+
+                function cleanup() {
+                    overlay.style.display = 'none';
+                    footerEl.innerHTML = '';
+                }
+
+                if (opts.type === 'confirm' || opts.type === 'prompt') {
+                    var btnCancel = document.createElement('button');
+                    btnCancel.className = 'modal-btn modal-btn-cancel';
+                    btnCancel.textContent = opts.cancelText || '取消';
+                    btnCancel.onclick = function() { cleanup(); resolve(opts.type === 'confirm' ? false : null); };
+                    footerEl.appendChild(btnCancel);
+                }
+
+                var btnConfirm = document.createElement('button');
+                btnConfirm.className = 'modal-btn ' + (opts.danger ? 'modal-btn-danger' : 'modal-btn-confirm');
+                btnConfirm.textContent = opts.confirmText || '确定';
+                btnConfirm.onclick = function() {
+                    cleanup();
+                    resolve(opts.input ? inputEl.value : true);
+                };
+                footerEl.appendChild(btnConfirm);
+
+                overlay.style.display = 'flex';
+                if (!opts.input) btnConfirm.focus();
+            });
+        }
+
+        function showAlert(message, title) {
+            return showModal({ type: 'alert', title: title || '提示', message: message });
+        }
+
+        function showConfirm(message, title, danger) {
+            return showModal({ type: 'confirm', title: title || '确认', message: message, danger: danger });
+        }
+
+        function showPrompt(message, defaultValue, title) {
+            return showModal({ type: 'prompt', title: title || '输入', message: message, input: true, inputValue: defaultValue || '' });
+        }
+
+        // ── 窗口边缘缩放（独立于 pywebviewready）──
+        (function() {
+            var resizing = false, resizeDir = '';
+            var startX, startY, startW, startH, startPosX, startPosY;
+            var resizeReady = false;
+
+            var handles = document.querySelectorAll('.resize-handle');
+            handles.forEach(function(el) {
+                el.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    resizeDir = el.dataset.dir;
+                    startX = e.screenX;
+                    startY = e.screenY;
+                    startW = window.outerWidth;
+                    startH = window.outerHeight;
+                    startPosX = window.screenX;
+                    startPosY = window.screenY;
+                    resizing = true;
+                    resizeReady = true;
+                    document.body.style.cursor = getCursor(resizeDir);
+                    document.body.style.userSelect = 'none';
+                });
+            });
+
+            function getCursor(dir) {
+                var map = {n:'ns-resize',s:'ns-resize',w:'ew-resize',e:'ew-resize',nw:'nwse-resize',se:'nwse-resize',ne:'nesw-resize',sw:'nesw-resize'};
+                return map[dir] || 'default';
+            }
+
+            var lastResizeTime = 0;
+            document.addEventListener('mousemove', function(e) {
+                if (!resizing || !resizeReady) return;
+                var now = Date.now();
+                if (now - lastResizeTime < 16) return;
+                lastResizeTime = now;
+
+                var dx = e.screenX - startX, dy = e.screenY - startY;
+                var newW = startW, newH = startH, newX = startPosX, newY = startPosY;
+                if (resizeDir.indexOf('e') >= 0) newW = Math.max(900, startW + dx);
+                if (resizeDir.indexOf('s') >= 0) newH = Math.max(600, startH + dy);
+                if (resizeDir.indexOf('w') >= 0) { newW = Math.max(900, startW - dx); newX = startPosX + (startW - newW); }
+                if (resizeDir.indexOf('n') >= 0) { newH = Math.max(600, startH - dy); newY = startPosY + (startH - newH); }
+                var needsMove = (resizeDir.indexOf('w') >= 0 || resizeDir.indexOf('n') >= 0);
+                if (needsMove) {
+                    window.pywebview.api.move_and_resize(newX, newY, newW, newH);
+                } else {
+                    window.pywebview.api.resize_only(newW, newH);
+                }
+            });
+
+            document.addEventListener('mouseup', function() {
+                if (resizing) {
+                    resizing = false;
+                    resizeReady = false;
+                    document.body.style.cursor = '';
+                    document.body.style.userSelect = '';
+                }
+            });
+        })();
+
+        // ── 自定义标题栏窗口控制 ──
+        window.addEventListener('pywebviewready', function() {
+            // 自动授予剪贴板权限（避免 WebView2 弹窗提示）
+            try {
+                var wv = window.chrome && window.chrome.webview;
+                if (wv && wv.postMessage) {
+                    // 通过 postMessage 请求权限
+                    window.navigator.permissions.query({name: 'clipboard-read'}).then(function() {});
+                }
+            } catch(e) {}
+
+            // 显示窗口控制按钮
+            document.getElementById('titlebar-controls').style.display = 'flex';
+
+            // 窗口控制
+            document.getElementById('btn-minimize').addEventListener('click', function() {
+                window.pywebview.api.minimize();
+            });
+            var isMaximized = false;
+            document.getElementById('btn-maximize').addEventListener('click', function() {
+                window.pywebview.api.toggle_maximize();
+                isMaximized = !isMaximized;
+                document.getElementById('svg-maximize').style.display = isMaximized ? 'none' : 'block';
+                document.getElementById('svg-restore').style.display = isMaximized ? 'block' : 'none';
+            });
+            document.getElementById('btn-close').addEventListener('click', function() {
+                window.pywebview.api.close();
+            });
+
+            // 恢复上次窗口状态
+            fetch('/api/settings').then(function(r){return r.json();}).then(function(s) {
+                if (s.view_mode && typeof MoCang !== 'undefined') MoCang.setViewMode(s.view_mode);
+                if (s.window && s.window.maximized) {
+                    window.pywebview.api.toggle_maximize();
+                    isMaximized = true;
+                    document.getElementById('svg-maximize').style.display = 'none';
+                    document.getElementById('svg-restore').style.display = 'block';
+                }
+                if (s.active_file_id && typeof MoCang !== 'undefined') {
+                    setTimeout(function() { MoCang.openFile(s.active_file_id); }, 500);
+                }
+            });
+
+            // 关闭前保存文件和视图状态
+            window.addEventListener('beforeunload', function() {
+                try {
+                    window.pywebview.api.save_active_state(
+                        MoCang.getActiveFileId() || '',
+                        MoCang.getViewMode() || 'preview'
+                    );
+                } catch(e) {}
+            });
+        });
+    </script>

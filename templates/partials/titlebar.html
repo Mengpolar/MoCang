@@ -1,0 +1,23 @@
+        <!-- 自定义标题栏 -->
+        <div id="titlebar" class="titlebar pywebview-drag-region">
+            <div class="titlebar-drag pywebview-drag-region">
+                <img src="/static/icon.png" class="titlebar-icon" alt="">
+                <span class="titlebar-brand">墨仓 | MoCang</span>
+            </div>
+            <div class="titlebar-controls" id="titlebar-controls" style="display:none;">
+                <span class="titlebar-resource" id="titlebar-resource" style="display:none;"></span>
+                <button class="titlebar-btn" id="btn-settings" title="设置">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                </button>
+                <button class="titlebar-btn" id="btn-minimize" title="最小化">
+                    <svg width="12" height="12" viewBox="0 0 12 12"><rect y="5" width="12" height="2" fill="currentColor"/></svg>
+                </button>
+                <button class="titlebar-btn" id="btn-maximize" title="最大化">
+                    <svg id="svg-maximize" width="12" height="12" viewBox="0 0 12 12"><rect x="1" y="1" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+                    <svg id="svg-restore" width="12" height="12" viewBox="0 0 12 12" style="display:none;"><rect x="2" y="3" width="8" height="8" fill="none" stroke="currentColor" stroke-width="1.2"/><polyline points="4,3 4,1 11,1 11,8 9,8" fill="none" stroke="currentColor" stroke-width="1.2"/></svg>
+                </button>
+                <button class="titlebar-btn titlebar-btn-close" id="btn-close" title="关闭">
+                    <svg width="12" height="12" viewBox="0 0 12 12"><line x1="1" y1="1" x2="11" y2="11" stroke="currentColor" stroke-width="1.5"/><line x1="11" y1="1" x2="1" y2="11" stroke="currentColor" stroke-width="1.5"/></svg>
+                </button>
+            </div>
+        </div>

@@ -1,0 +1,130 @@
+    <!-- 设置页面 -->
+    <div id="settings-overlay" class="settings-overlay" style="display:none;">
+        <div class="settings-panel">
+            <div class="settings-header">
+                <span class="settings-title"><img src="/static/icons/svgs/box.svg" width="16" height="16" style="vertical-align:middle;filter:invert(1) brightness(0.8);"> 设置</span>
+                <button class="settings-close-btn" id="settings-close">&times;</button>
+            </div>
+            <div class="settings-body">
+                <div class="settings-menu">
+                    <div class="settings-menu-item active" data-section="lock"><img src="/static/icons/svgs/guding.svg" width="14" height="14" style="vertical-align:middle;filter:invert(1) brightness(0.8);"> 锁屏设置</div>
+                    <div class="settings-menu-item" data-section="editor"><img src="/static/icons/svgs/bianji-3.svg" width="14" height="14" style="vertical-align:middle;filter:invert(1) brightness(0.8);"> 文档设置</div>
+                    <div class="settings-menu-item" data-section="interface"><img src="/static/icons/svgs/taiyang.svg" width="14" height="14" style="vertical-align:middle;filter:invert(1) brightness(0.8);"> 界面设置</div>
+                    <div class="settings-menu-item" data-section="software"><img src="/static/icons/svgs/box.svg" width="14" height="14" style="vertical-align:middle;filter:invert(1) brightness(0.8);"> 软件设置</div>
+                    <div class="settings-menu-item" data-section="ai"><img src="/static/icons/svgs/shandian.svg" width="14" height="14" style="vertical-align:middle;filter:invert(1) brightness(0.8);"> AI 设置</div>
+                </div>
+                <div class="settings-content">
+                    <!-- 锁屏设置 -->
+                    <div class="settings-section active" id="section-lock">
+                        <div class="setting-row">
+                            <div class="setting-label">启用锁屏</div>
+                            <div class="setting-control"><label class="toggle-switch"><input type="checkbox" id="set-lock-enabled"><span class="toggle-slider"></span></label></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">锁屏密码</div>
+                            <div class="setting-control"><button class="btn-setting" id="btn-set-password">设置</button><button class="btn-setting btn-setting-danger" id="btn-clear-password" style="display:none;">清除</button></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">长时间未操作</div>
+                            <div class="setting-control"><select id="set-lock-idle" class="setting-select"><option value="0">不锁屏</option><option value="60">1 分钟</option><option value="300">5 分钟</option><option value="600">10 分钟</option><option value="1800">30 分钟</option><option value="3600">1 小时</option></select></div>
+                        </div>
+                    </div>
+                    <!-- 文档设置 -->
+                    <div class="settings-section" id="section-editor">
+                        <div class="setting-row">
+                            <div class="setting-label">自动保存</div>
+                            <div class="setting-control"><label class="toggle-switch"><input type="checkbox" id="set-auto-save"><span class="toggle-slider"></span></label></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">触发保存时间（秒）</div>
+                            <div class="setting-control"><select id="set-save-interval" class="setting-select"><option value="10">10</option><option value="20">20</option><option value="30">30</option><option value="45">45</option><option value="60">60</option></select></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">编辑器字体大小</div>
+                            <div class="setting-control"><select id="set-font-size" class="setting-select"><option value="10">10</option><option value="12">12</option><option value="14">14</option><option value="16">16</option><option value="18">18</option><option value="20">20</option><option value="22">22</option><option value="24">24</option><option value="26">26</option><option value="28">28</option><option value="30">30</option><option value="32">32</option><option value="34">34</option><option value="36">36</option><option value="38">38</option><option value="40">40</option></select></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">选中复制（预览/分屏）</div>
+                            <div class="setting-control"><label class="toggle-switch"><input type="checkbox" id="set-select-copy"><span class="toggle-slider"></span></label></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">右键粘贴（编辑/分屏）</div>
+                            <div class="setting-control"><label class="toggle-switch"><input type="checkbox" id="set-right-click-paste"><span class="toggle-slider"></span></label></div>
+                        </div>
+                    </div>
+                    <!-- 界面设置 -->
+                    <div class="settings-section" id="section-interface">
+                        <div class="setting-row">
+                            <div class="setting-label">自定义背景图片</div>
+                            <div class="setting-control"><button class="btn-setting" id="btn-upload-bg">选择图片</button><button class="btn-setting btn-setting-danger" id="btn-remove-bg" style="display:none;">移除背景</button><input type="file" id="bg-file-input" accept="image/*" style="display:none;"></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">暗黑模式</div>
+                            <div class="setting-control"><label class="toggle-switch"><input type="checkbox" id="set-dark-mode"><span class="toggle-slider"></span></label></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">全局透明度</div>
+                            <div class="setting-control"><div class="slider-container"><input type="range" id="set-opacity" min="50" max="100" value="100" class="setting-slider"><span id="opacity-value" class="slider-value">1.0</span></div></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">界面透明度</div>
+                            <div class="setting-control"><div class="slider-container"><input type="range" id="set-ui-opacity" min="30" max="100" value="90" class="setting-slider"><span id="ui-opacity-value" class="slider-value">0.9</span></div></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">背景模糊度</div>
+                            <div class="setting-control"><div class="slider-container"><input type="range" id="set-bg-blur" min="0" max="30" value="0" class="setting-slider"><span id="bg-blur-value" class="slider-value">0px</span></div></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">界面模糊度</div>
+                            <div class="setting-control"><div class="slider-container"><input type="range" id="set-ui-blur" min="0" max="20" value="0" class="setting-slider"><span id="ui-blur-value" class="slider-value">0px</span></div></div>
+                        </div>
+                    </div>
+                    <!-- 软件设置 -->
+                    <div class="settings-section" id="section-software">
+                        <div class="setting-row">
+                            <div class="setting-label">显示资源占用</div>
+                            <div class="setting-control"><label class="toggle-switch"><input type="checkbox" id="set-show-resource"><span class="toggle-slider"></span></label></div>
+                        </div>
+                    </div>
+                    <!-- AI 设置 -->
+                    <div class="settings-section" id="section-ai">
+                        <div class="setting-row">
+                            <div class="setting-label">
+                                启用AI功能 <span id="ai-status" class="ai-status"></span>
+                            </div>
+                            <div class="setting-control" id="ai-toggle-wrap">
+                                <label class="toggle-switch"><input type="checkbox" id="set-ai-enabled"><span class="toggle-slider"></span></label>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">接口地址</div>
+                            <div class="setting-control"><input type="text" id="set-ai-endpoint" class="setting-input" placeholder="https://api.openai.com/v1/chat/completions"></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">API 密钥</div>
+                            <div class="setting-control"><input type="password" id="set-ai-apikey" class="setting-input" placeholder="sk-..."></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label">模型名称</div>
+                            <div class="setting-control"><input type="text" id="set-ai-model" class="setting-input" placeholder="gpt-3.5-turbo"></div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-label" id="ai-privacy-label">
+                                我已阅读并同意 <a href="javascript:void(0)" id="btn-show-privacy" class="privacy-link">隐私声明</a>
+                            </div>
+                            <div class="setting-control">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="set-ai-privacy-agree" disabled>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="settings-footer">
+                <button class="btn-settings-action btn-cancel" id="btn-settings-cancel">取消</button>
+                <button class="btn-settings-action btn-save" id="btn-settings-save">保存</button>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,41 @@
+                <!-- 右侧内容区 -->
+                <div class="kb-main" id="kb-main-area">
+                    <!-- 编辑工具栏 -->
+                    <div id="kb-toolbar" class="kb-toolbar" style="display:none;">
+                        <button class="kb-tool-btn" data-action="bold" title="加粗 (Ctrl+B)"><b>B</b></button>
+                        <button class="kb-tool-btn" data-action="italic" title="斜体 (Ctrl+I)"><i>I</i></button>
+                        <button class="kb-tool-btn" data-action="strikethrough" title="删除线"><s>S</s></button>
+                        <span class="kb-tool-sep"></span>
+                        <button class="kb-tool-btn" data-action="h1" title="一级标题">H1</button>
+                        <button class="kb-tool-btn" data-action="h2" title="二级标题">H2</button>
+                        <button class="kb-tool-btn" data-action="h3" title="三级标题">H3</button>
+                        <span class="kb-tool-sep"></span>
+                        <button class="kb-tool-btn" data-action="ul" title="无序列表">• 列表</button>
+                        <button class="kb-tool-btn" data-action="ol" title="有序列表">1. 列表</button>
+                        <button class="kb-tool-btn" data-action="check" title="任务列表">☑ 任务</button>
+                        <span class="kb-tool-sep"></span>
+                        <button class="kb-tool-btn" data-action="code" title="行内代码">&lt;/&gt;</button>
+                        <button class="kb-tool-btn" data-action="codeblock" title="代码块">```</button>
+                        <button class="kb-tool-btn" data-action="quote" title="引用">❝ 引用</button>
+                        <button class="kb-tool-btn" data-action="link" title="链接 (Ctrl+K)">🔗</button>
+                        <button class="kb-tool-btn" data-action="table" title="表格">📊</button>
+                        <button class="kb-tool-btn" data-action="hr" title="分隔线">—</button>
+                        <span class="kb-tool-sep"></span>
+                        <button class="kb-tool-btn kb-save-btn" data-action="save" title="保存 (Ctrl+S)"><img src="/static/icons/svgs/baocun.svg" width="14" height="14" style="vertical-align:middle;filter:invert(1) brightness(0.8);"> 保存</button>
+                    </div>
+                    <!-- 编辑区容器 -->
+                    <div id="kb-editor-area" class="kb-editor-area">
+                        <textarea id="kb-editor" class="kb-editor" style="display:none;" spellcheck="false" placeholder="输入 Markdown 内容..."></textarea>
+                        <!-- 预览区 -->
+                        <div id="kb-content" class="kb-content">
+                            <div class="kb-placeholder">
+                                <span class="kb-placeholder-icon"><img src="/static/icons/svgs/file.svg" width="64" height="64" style="opacity:0.5;filter:invert(1) brightness(0.8);"></span>
+                                <p>选择左侧文件查看内容</p>
+                            </div>
+                        </div>
+                        <!-- 分屏拖动条 -->
+                        <div id="kb-divider" class="kb-divider" style="display:none;"></div>
+                        <!-- 分屏预览区 -->
+                        <div id="kb-preview-split" class="kb-preview-split" style="display:none;"></div>
+                    </div>
+                </div>

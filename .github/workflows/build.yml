@@ -1,0 +1,49 @@
+name: build-tauri
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-tauri:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [windows-latest]
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: rust setup
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: sync node version
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: pyappify-action
+        uses: ok-oldking/pyappify-action@master
+        with:
+          # version: "v1.1.6"  # 可选：指定 pyappify 版本
+          build_exe_only: false
+
+      - name: Update Release Assets
+        uses: softprops/action-gh-release@v2.0.5
+        with:
+          files: pyappify_dist/*

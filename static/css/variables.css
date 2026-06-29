@@ -1,0 +1,108 @@
+/* ═══════════════════════════════════════════════
+   墨仓 | MoCang - Markdown 知识库样式
+   ═══════════════════════════════════════════════ */
+
+*, *::before, *::after {
+    margin: 0; padding: 0; box-sizing: border-box;
+}
+
+:root {
+    /* --- 核心基础颜色 --- */
+    --bg-base: #0a0a0f;
+    --bg-base-gradient: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #0a0a1a 100%);
+
+    /* --- UI 层级背景 (搭配 alpha 使用) --- */
+    --bg-surface: rgba(10, 10, 20, var(--ui-bg-alpha));
+    --bg-panel: rgba(15, 15, 25, var(--ui-bg-alpha));
+    --bg-float: rgba(15, 15, 30, 0.97);
+
+    /* --- 交互状态背景 --- */
+    --bg-input: rgba(255, 255, 255, 0.06);
+    --bg-hover: rgba(255, 255, 255, 0.08);
+    --bg-active: rgba(108, 99, 255, 0.15);
+    --bg-code: rgba(255, 255, 255, 0.06);
+
+    /* --- 边框与线条 --- */
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --divider: rgba(255, 255, 255, 0.06);
+
+    /* --- 文本与高亮 --- */
+    --text-primary: #e8e8f0;
+    --text-secondary: #8888aa;
+    --text-muted: #555570;
+    --accent: #6c63ff;
+    --accent-hover: #7f78ff;
+    --danger: #ff4757;
+    --success: #2ed573;
+    --warning: #ffa502;
+    --warning-bg: rgba(255, 165, 2, 0.3);
+
+    /* --- 滚动条 --- */
+    --scrollbar-thumb: rgba(255, 255, 255, 0.1);
+
+    /* --- 尺寸参数 --- */
+    --titlebar-height: 36px;
+    --nav-height: 48px;
+    --sidebar-width: 280px;
+    --toc-width: 200px;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --ui-bg-alpha: 0.9;
+    --glass-blur: 12px;
+}
+
+/* 亮色主题覆盖 */
+:root.light-mode {
+    --bg-base: #f0f0f5;
+    --bg-base-gradient: linear-gradient(135deg, #e6e6f0 0%, #f0f0f5 50%, #e6e6f0 100%);
+
+    --bg-surface: rgba(248, 248, 250, var(--ui-bg-alpha));
+    --bg-panel: rgba(255, 255, 255, var(--ui-bg-alpha));
+    --bg-float: rgba(255, 255, 255, 0.97);
+
+    --bg-input: rgba(0, 0, 0, 0.04);
+    --bg-hover: rgba(0, 0, 0, 0.06);
+    --bg-active: rgba(90, 82, 224, 0.1);
+    --bg-code: rgba(0, 0, 0, 0.04);
+
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --divider: rgba(0, 0, 0, 0.06);
+
+    --text-primary: #1a1a2e;
+    --text-secondary: #555570;
+    --text-muted: #888899;
+    --accent: #5a52e0;
+    --accent-hover: #4a42d0;
+    --warning-bg: rgba(255, 165, 2, 0.2);
+
+    --scrollbar-thumb: rgba(0, 0, 0, 0.15);
+}
+
+html, body {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Microsoft YaHei", sans-serif;
+    color: var(--text-primary);
+    background: var(--bg-dark);
+    overflow: hidden;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* ── 背景 ── */
+#bg-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: var(--bg-base-gradient);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#app {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    border: 1px solid var(--divider);
+}

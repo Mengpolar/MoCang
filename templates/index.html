@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>墨仓 | MoCang</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/vendor/highlight/github-dark.min.css">
+    <script src="/static/vendor/highlight/highlight.min.js"></script>
+    <script src="/static/vendor/Sortable.min.js"></script>
+    <script src="/static/vendor/marked.min.js"></script>
+</head>
+<body>
+    <!-- 全局背景 -->
+    <div id="bg-layer"></div>
+
+    <!-- 主界面 -->
+    <div id="app">
+        <!-- 窗口边缘缩放手柄 -->
+        <div class="resize-handle resize-n" data-dir="n"></div>
+        <div class="resize-handle resize-s" data-dir="s"></div>
+        <div class="resize-handle resize-w" data-dir="w"></div>
+        <div class="resize-handle resize-e" data-dir="e"></div>
+        <div class="resize-handle resize-nw" data-dir="nw"></div>
+        <div class="resize-handle resize-ne" data-dir="ne"></div>
+        <div class="resize-handle resize-sw" data-dir="sw"></div>
+        <div class="resize-handle resize-se" data-dir="se"></div>
+        {% include 'partials/titlebar.html' %}
+        {% include 'partials/navbar.html' %}
+
+        <!-- 内容区 -->
+        <main id="content-area">
+            <div class="knowledge-layout">
+                {% include 'partials/sidebar.html' %}
+                {% include 'partials/editor.html' %}
+                {% include 'partials/toc.html' %}
+            </div>
+        </main>
+        <!-- AI 润色浮动按钮 -->
+        <div id="ai-float-btn" class="ai-float-btn" style="display:none;">
+            <button id="ai-polish-btn" class="ai-polish-btn"><img src="/static/icons/svgs/shandian.svg" width="12" height="12" style="vertical-align:middle;filter:invert(1);margin-right:4px;">一键润色</button>
+        </div>
+        <!-- AI 润色对比面板 -->
+        <div id="ai-diff-panel" class="ai-diff-panel" style="display:none;">
+            <div class="ai-diff-header">
+                <span class="ai-diff-title">AI 润色对比</span>
+                <span id="ai-diff-status" class="ai-diff-status"></span>
+            </div>
+            <div class="ai-diff-body">
+                <div class="ai-diff-col">
+                    <div class="ai-diff-col-title">原文</div>
+                    <div id="ai-diff-original" class="ai-diff-text"></div>
+                </div>
+                <div class="ai-diff-col">
+                    <div class="ai-diff-col-title">润色后</div>
+                    <div id="ai-diff-polished" class="ai-diff-text"></div>
+                </div>
+            </div>
+            <div class="ai-diff-footer">
+                <button id="ai-diff-reject" class="ai-diff-btn ai-diff-reject"><img src="/static/icons/svgs/guanbi.svg" width="12" height="12" style="vertical-align:middle;filter:invert(1);margin-right:2px;">取消</button>
+                <button id="ai-diff-accept" class="ai-diff-btn ai-diff-accept"><img src="/static/icons/svgs/check.svg" width="12" height="12" style="vertical-align:middle;filter:invert(1);margin-right:2px;">应用润色</button>
+            </div>
+        </div>
+    </div>
+
+    {% include 'partials/settings.html' %}
+    {% include 'partials/lock.html' %}
+    {% include 'partials/modal.html' %}
+    {% include 'partials/scripts.html' %}
+</body>
+</html>

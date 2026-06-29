@@ -1,0 +1,39 @@
+    <!-- 自定义弹窗 -->
+    <div id="modal-overlay" class="modal-overlay" style="display:none;">
+        <div class="modal-panel">
+            <div class="modal-header">
+                <span class="modal-title" id="modal-title">提示</span>
+            </div>
+            <div class="modal-body">
+                <div class="modal-message" id="modal-message"></div>
+                <input type="text" id="modal-input" class="modal-input" style="display:none;" autocomplete="off">
+            </div>
+            <div class="modal-footer" id="modal-footer"></div>
+        </div>
+    </div>
+
+    <!-- 隐私声明弹窗 -->
+    <div id="privacy-overlay" class="modal-overlay" style="display:none;">
+        <div class="modal-panel" style="width:520px;max-height:80vh;">
+            <div class="modal-header">
+                <span class="modal-title">AI 隐私声明</span>
+            </div>
+            <div class="modal-body" style="max-height:60vh;overflow-y:auto;">
+                <div class="ai-privacy-full">
+                    <p><strong>墨仓 (MoCang)</strong> 始终坚持"本地优先"的原则，您的所有知识库文件默认仅存储在本地设备中。</p>
+                    <p>在您使用 AI 辅助功能（如：选中内容要求润色、总结或对话）时，请注意以下事项：</p>
+                    <ol>
+                        <li><strong>数据传输：</strong>仅当您主动触发 AI 操作时，您所选中的当前文本或相关文档上下文才会被发送至您配置的 API 接口。</li>
+                        <li><strong>数据去向：</strong>您的数据将被发送给您在AI设置中填写的"接口地址"对应的服务商（如 OpenAI 或其他第三方代理平台）。墨仓不提供官方的代理服务，也不会在墨仓自己的服务器上拦截、存储或分析您的任何数据。</li>
+                        <li><strong>免责条款：</strong>请谨慎评估您所配置的服务商的隐私政策。强烈建议您不要使用 AI 处理包含极度机密（如密码、重要个人隐私、商业机密）的本地文档。</li>
+                    </ol>
+                    <p><strong>勾选开启 AI 功能，即代表您理解并同意上述数据传输行为。</strong></p>
+                </div>
+                <div id="privacy-timer" style="text-align:center;margin-top:12px;font-size:12px;color:var(--text-muted);">请仔细阅读... (<span id="privacy-countdown">5</span>s)</div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-cancel" id="privacy-disagree">不同意</button>
+                <button class="modal-btn modal-btn-confirm" id="privacy-confirm" disabled style="opacity:0.5;cursor:not-allowed;">我已阅读并同意</button>
+            </div>
+        </div>
+    </div>
